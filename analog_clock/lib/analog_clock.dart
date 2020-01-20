@@ -149,6 +149,14 @@ class _AnalogClockState extends State<AnalogClock> {
           color: customTheme.backgroundColor,
           child: Stack(
             children: [
+              Positioned(
+                right: 0.0,
+                top: 0.0,
+                width: 210.0,
+                height: 210.0,
+                child: Container(),
+              ),
+
               ...List.generate(60, (i) => SecIndex(i, _now)),
               ...List.generate(12, (i) => HouIndex(i, _now)),
               ...List.generate(12, (i) => HouIndexInner(i, _now)),
@@ -160,17 +168,13 @@ class _AnalogClockState extends State<AnalogClock> {
               Positioned(
                 right: 0,
                 bottom: 0,
-                child: SizedBox(
-                  width: 210.0,
-                  height: 150.0,
-                  child: Center(
-                    child: weatherInfo,
-                  ),
+                width: 210.0,
+                height: 150.0,
+                child: Center(
+                  child: weatherInfo,
                 ),
               ),
-              Positioned(
-                child: ,
-              ),
+
             ],
           ),
         ),
