@@ -4,13 +4,13 @@
 
 import 'dart:async';
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter_clock_helper/model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/semantics.dart';
 import 'package:intl/intl.dart';
 import 'package:vector_math/vector_math_64.dart' show radians;
 
-import 'container_hand.dart';
 import 'drawn_hand.dart';
 
 /// Total distance traveled by a second or a minute hand, each second or minute,
@@ -68,7 +68,7 @@ class _AnalogClockState extends State<AnalogClock> {
   void _updateModel() {
     setState(() {
       _temperature = widget.model.temperatureString;
-      _temperatureRange = '(${widget.model.low} - ${widget.model.highString})';
+      _temperatureRange = '${widget.model.low} - ${widget.model.highString}';
       _condition = widget.model.weatherString;
       _location = widget.model.location;
     });
@@ -97,31 +97,43 @@ class _AnalogClockState extends State<AnalogClock> {
     //    [DigitalClock].
     final customTheme = Theme.of(context).brightness == Brightness.light
         ? Theme.of(context).copyWith(
-            // Hour hand.
-            primaryColor: Color(0xFF4285F4),
-            // Minute hand.
-            highlightColor: Color(0xFF8AB4F8),
-            // Second hand.
-            accentColor: Color(0xFF669DF6),
-            backgroundColor: Color(0xFFD2E3FC),
+            primaryColor: Color(0xFF008877),
+            highlightColor: Color(0xFFA1A1A1),
+            accentColor: Color(0xFF717777),
+            indicatorColor: Color(0xFFEC4B26),
+            dividerColor: Color(0xFFCCCCCC),
+            accentTextTheme: TextTheme(
+              title: TextStyle(fontSize: 48, color: Color(0xFF333333), fontWeight: FontWeight.bold,),
+              headline: TextStyle(fontSize: 18, color: Color(0xFF333333), ),
+              body1: TextStyle(fontSize: 16, color: Color(0xFF333333))
+            ),
+            backgroundColor: Color(0xFFF1F1F1),
           )
         : Theme.of(context).copyWith(
-            primaryColor: Color(0xFFD2E3FC),
-            highlightColor: Color(0xFF4285F4),
-            accentColor: Color(0xFF8AB4F8),
-            backgroundColor: Color(0xFF3C4043),
+          primaryColor: Color(0xFF33EEFC7),
+          highlightColor: Color(0xFFCCCCCC),
+          accentColor: Color(0xFF677070),
+          indicatorColor: Color(0xFFFF5100),
+          dividerColor: Color(0xFF333336),
+          accentTextTheme: TextTheme(
+          title: TextStyle(fontSize: 48, color: Color(0xFFF9F9F9), fontWeight: FontWeight.bold,),
+          headline: TextStyle(fontSize: 18, color: Color(0xFFEEEEEE), ),
+          body1: TextStyle(fontSize: 16, color: Color(0xFFC7C7C7))
+      ),
+            backgroundColor: Color(0xFF111111),
           );
 
     final time = DateFormat.Hms().format(DateTime.now());
     final weatherInfo = DefaultTextStyle(
       style: TextStyle(color: customTheme.primaryColor),
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          Text(_temperature),
-          Text(_temperatureRange),
-          Text(_condition),
-          Text(_location),
+          Text(_temperature,style: customTheme.accentTextTheme.title,),
+          Text(_location, style: customTheme.accentTextTheme.body1,),
+          Padding(padding: EdgeInsets.only(top: 6.0)),
+          Text(_condition.toUpperCase(), style: customTheme.accentTextTheme.headline,),
+          Text(_temperatureRange, style: customTheme.accentTextTheme.body1,),
         ],
       ),
     );
@@ -131,49 +143,36 @@ class _AnalogClockState extends State<AnalogClock> {
         label: 'Analog clock with time $time',
         value: time,
       ),
-      child: Container(
-        color: customTheme.backgroundColor,
-        child: Stack(
-          children: [
-            // Example of a hand drawn with [CustomPainter].
-            DrawnHand(
-              color: customTheme.accentColor,
-              thickness: 4,
-              size: 1,
-              angleRadians: _now.second * radiansPerTick,
-            ),
-            DrawnHand(
-              color: customTheme.highlightColor,
-              thickness: 16,
-              size: 0.9,
-              angleRadians: _now.minute * radiansPerTick,
-            ),
-            // Example of a hand drawn with [Container].
-            ContainerHand(
-              color: Colors.transparent,
-              size: 0.5,
-              angleRadians: _now.hour * radiansPerHour +
-                  (_now.minute / 60) * radiansPerHour,
-              child: Transform.translate(
-                offset: Offset(0.0, -60.0),
-                child: Container(
-                  width: 32,
-                  height: 150,
-                  decoration: BoxDecoration(
-                    color: customTheme.primaryColor,
+      child: Theme(
+        data: customTheme,
+        child: Container(
+          color: customTheme.backgroundColor,
+          child: Stack(
+            children: [
+              ...List.generate(60, (i) => SecIndex(i, _now)),
+              ...List.generate(12, (i) => HouIndex(i, _now)),
+              ...List.generate(12, (i) => HouIndexInner(i, _now)),
+              DayBgline(),
+              ...List.generate(30, (i) => DayIndex(i, _now)),
+              ...List.generate(12, (i) => MonthIndex(i, _now)),
+              CenterPoint(),
+
+              Positioned(
+                right: 0,
+                bottom: 0,
+                child: SizedBox(
+                  width: 210.0,
+                  height: 150.0,
+                  child: Center(
+                    child: weatherInfo,
                   ),
                 ),
               ),
-            ),
-            Positioned(
-              left: 0,
-              bottom: 0,
-              child: Padding(
-                padding: const EdgeInsets.all(8),
-                child: weatherInfo,
+              Positioned(
+                child: ,
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
