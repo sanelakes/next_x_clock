@@ -9,9 +9,13 @@ import 'package:flutter_clock_helper/model.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
+import 'package:flutter/services.dart';
+
 import 'analog_clock.dart';
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
+
   // A temporary measure until Platform supports web and TargetPlatform supports
   // macOS.
   if (!kIsWeb && Platform.isMacOS) {
@@ -20,7 +24,9 @@ void main() {
     // See https://github.com/flutter/flutter/wiki/Desktop-shells#target-platform-override.
     debugDefaultTargetPlatformOverride = TargetPlatform.fuchsia;
   }
-
+  if (Platform.isAndroid) {
+    SystemChrome.setEnabledSystemUIOverlays([]);
+  }
   // This creates a clock that enables you to customize it.
   //
   // The [ClockCustomizer] takes in a [ClockBuilder] that consists of:
