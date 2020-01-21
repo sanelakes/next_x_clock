@@ -56,7 +56,7 @@ class IndexPaint extends Hand {
         child: FittedBox(
           fit: BoxFit.contain,
           child: CustomPaint(
-            size: Size(480, 480),
+            size: Size(480.0, 480.0),
             painter: _IndexPainter(data: data, color: color, scale: size, offset: offset, drawStroke: drawStroke, strokeColor: strokeColor, strokeData: strokeData, rotation: rotation, center: false),
           ),
         ),
@@ -89,7 +89,7 @@ class BgElement extends StatelessWidget {
       child: FittedBox(
         fit: BoxFit.contain,
         child: CustomPaint(
-          size: Size(480, 480),
+          size: Size(480.0, 480.0),
           painter: _IndexPainter(data: data, color: color, scale: 1.0, offset: 0.0, rotation: 0.0,drawStroke: drawStroke, strokeColor: strokeColor, strokeData: strokeData, center: center),
         ),
       ),
@@ -315,11 +315,11 @@ class DayIndex extends StatelessWidget {
     return Container(
       padding: clockPadding,
       child: Transform.rotate(
-        angle: angle / 180 * math.pi,
+        angle: angle / 180.0 * math.pi,
         child: FittedBox(
           fit: BoxFit.contain,
           child: CustomPaint(
-            size: Size(480, 480),
+            size: Size(480.0, 480.0),
             painter: _DayPainter(color: color, offset: offset,),
           ),
         ),
@@ -375,7 +375,7 @@ class MonthIndex extends StatelessWidget {
         child: FittedBox(
           fit: BoxFit.contain,
           child: CustomPaint(
-            size: Size(480, 480),
+            size: Size(480.0, 480.0),
             painter: _MonthPainter(color: color, on: on, odd: (index + 1).isOdd),
           ),
         ),
