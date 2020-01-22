@@ -20,6 +20,28 @@ final String dayBGroundLine = "M64.9519053,0.577350269 L0.5,37.7886751 L0.5,112.
 final String theCenterPoint = "M10.3923048,0 L20.7846097,6 L20.7846097,18 L10.3923048,24 L0,18 L0,6 Z";
 
 final EdgeInsets clockPadding = EdgeInsets.only(left: 18.0);
+void makePath(Path path, String pathData) {
+  final Iterable<Match> itr = RegExp(r"[A-Z][\d\.\,\s]*").allMatches(pathData);
+  for (Match m in itr) {
+    String match = m.group(0).trim();
+    List<String> step;
+    if (match.startsWith("M")) {
+      step = match.substring(1).split(",");
+      path.moveTo(double.parse(step[0]), double.parse(step[1]));
+    }
+    if (match.startsWith("L")) {
+      step = match.substring(1).split(",");
+      path.lineTo(double.parse(step[0]), double.parse(step[1]));
+    }
+    if (match.startsWith("C")) {
+      step = match.substring(1).split(" ").join(",").split(",");
+      path.cubicTo(double.parse(step[0]), double.parse(step[1]), double.parse(step[2]), double.parse(step[3]), double.parse(step[4]), double.parse(step[5]),);
+    }
+    if (match.startsWith("Z")) {
+      path.close();
+    }
+  }
+}
 
 class IndexPaint extends Hand {
   const IndexPaint({
@@ -124,28 +146,6 @@ class _IndexPainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    void makePath(path, pathData) {
-      final Iterable<Match> itr = RegExp(r"[A-Z][\d\.\,\s]*").allMatches(pathData);
-      for (Match m in itr) {
-        String match = m.group(0).trim();
-        List<String> step;
-        if (match.startsWith("M")) {
-          step = match.substring(1).split(",");
-          path.moveTo(double.parse(step[0]), double.parse(step[1]));
-        }
-        if (match.startsWith("L")) {
-          step = match.substring(1).split(",");
-          path.lineTo(double.parse(step[0]), double.parse(step[1]));
-        }
-        if (match.startsWith("C")) {
-          step = match.substring(1).split(" ").join(",").split(",");
-          path.cubicTo(double.parse(step[0]), double.parse(step[1]), double.parse(step[2]), double.parse(step[3]), double.parse(step[4]), double.parse(step[5]),);
-        }
-        if (match.startsWith("Z")) {
-          path.close();
-        }
-      }
-    }
 
     Paint paint = Paint();
     Path path = Path();
